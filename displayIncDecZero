@@ -1,0 +1,25 @@
+const int pinosSegmentos[] = {2,3,4,5,6,7,8};
+const byte digitosDisplay[10][7] = {
+  {1,1,1,1,1,1,0},{0,1,1,0,0,0,0},{1,1,0,1,1,0,1},{1,1,1,1,0,0,1},{0,1,1,0,0,1,1},{1,0,1,1,0,1,1},
+  {1,0,1,1,1,1,1},{1,1,1,0,0,0,0},{1,1,1,1,1,1,1},{1,1,1,1,0,1,1} };
+
+const int botoesControle[] = {9,10,11};
+bool estadoBotoes[] = {0,0,0};
+int valorAtual = 00;
+void exibirNumero(int numero){
+  for(int i=0;i<7;i++)digitalWrite(pinosSegmentos[i],digitosDisplay[numero][i]);}
+
+void setup(){
+  for(int i=0;i<7;i++)pinMode(pinosSegmentos[i],OUTPUT);
+  for(int i=0;i<3;i++)pinMode(botoesControle[i],INPUT_PULLUP);
+  exibirNumero(valorAtual);}
+
+void loop(){
+  for(int i=0;i<3;i++){
+    if(!digitalRead(botoesControle[i])&&!estadoBotoes[i]){
+      estadoBotoes[i]=1;
+      if(i==0&&valorAtual<9)valorAtual++;
+      else if(i==1&&valorAtual>0)valorAtual--;
+      else if(i==2)valorAtual=0;
+      exibirNumero(valorAtual);
+    }else if(digitalRead(botoesControle[i]))estadoBotoes[i]=0;} }
