@@ -1,0 +1,34 @@
+int leds[] = {3, 5, 6, 9, 10, 11};
+int botao = 2;
+
+int estado = 0;
+bool ligado = false;
+bool pressionadoAntes = false;
+unsigned long tempo = 0;
+
+void setup() {
+  for (int i = 0; i < 6; i++) {
+    pinMode(leds[i], OUTPUT);
+  }
+  pinMode(botao, INPUT);}
+
+void loop() {
+  bool pressionado = digitalRead(botao);
+
+  if (pressionado && !pressionadoAntes) {
+    ligado = !ligado;        
+    delay(200); }
+
+  pressionadoAntes = pressionado;
+
+  if (ligado && millis() - tempo >= 1000) {
+    for (int i = 0; i < 6; i++) {
+      digitalWrite(leds[i], LOW); }
+    
+    digitalWrite(leds[estado], HIGH);
+    digitalWrite(leds[estado + 1], HIGH);
+
+    estado += 2;
+    if (estado >= 6) estado = 0;
+
+    tempo = millis();}}
