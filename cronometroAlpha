@@ -1,0 +1,35 @@
+const int pinosDezenas[] = {2,3,4,5,6,7,8}, pinosUnidades[] = {9,10,11,12,13,A0,A1};
+const byte digitos[10][7] = {
+  {1,1,1,1,1,1,0},{0,1,1,0,0,0,0},{1,1,0,1,1,0,1},{1,1,1,1,0,0,1},{0,1,1,0,0,1,1},
+  {1,0,1,1,0,1,1},{1,0,1,1,1,1,1},{1,1,1,0,0,0,0},{1,1,1,1,1,1,1},{1,1,1,1,0,1,1}};
+const int botaoPlay = A2, botaoMais = A3, botaoMenos = A4;
+
+int incremento = 1, decremento = 1, segundos = 0;
+
+bool rodando = 0, playAnterior = 0, maisAnterior = 0, menosAnterior = 0;
+unsigned long tempoAnterior = 0;
+
+void setup() {
+  for (int i = 0; i < 7; i++) pinMode(pinosDezenas[i], OUTPUT), pinMode(pinosUnidades[i], OUTPUT);
+  pinMode(botaoPlay, INPUT_PULLUP); pinMode(botaoMais, INPUT_PULLUP); pinMode(botaoMenos, INPUT_PULLUP);
+  exibirNumero(segundos);}
+
+void loop() {
+  bool playAtual = digitalRead(botaoPlay), maisAtual = digitalRead(botaoMais), menosAtual = digitalRead(botaoMenos);
+  if (playAnterior && !playAtual) rodando = !rodando, tempoAnterior = millis();
+  playAnterior = playAtual;
+
+  if (!rodando) {
+    if (maisAnterior && !maisAtual) segundos = (segundos + incremento) % 60, exibirNumero(segundos);
+    if (menosAnterior && !menosAtual) segundos = (segundos + 60 - (decremento % 60)) % 60, exibirNumero(segundos);
+  } else if (millis() - tempoAnterior >= 1000) {
+    tempoAnterior = millis();
+    segundos = (segundos + 1) % 60;
+    exibirNumero(segundos);}
+  maisAnterior = maisAtual;
+  menosAnterior = menosAtual;}
+  
+void exibirNumero(int valor) {
+  int dezena = valor / 10, unidade = valor % 10;
+  for (int i = 0; i < 7; i++)
+    digitalWrite(pinosDezenas[i], digitos[dezena][i]),digitalWrite(pinosUnidades[i], digitos[unidade][i]);}
